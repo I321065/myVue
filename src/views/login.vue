@@ -29,6 +29,9 @@
                         <FormItem>
                             <Button @click="handleSubmit" type="primary" long>登录</Button>
                         </FormItem>
+                        <FormItem>
+                            <Button @click="handleSubmit" type="primary" long>注册</Button>
+                        </FormItem>
                     </Form>
                     <p class="login-tip">输入任意用户名和密码即可</p>
                 </div>
@@ -38,7 +41,10 @@
 </template>
 
 <script>
+
 import Cookies from 'js-cookie';
+import {loginConfig} from '../axios/index'
+
 export default {
     data () {
         return {
@@ -60,17 +66,32 @@ export default {
         handleSubmit () {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.form.userName);
-                    Cookies.set('password', this.form.password);
-                    this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
-                    if (this.form.userName === 'iview_admin') {
-                        Cookies.set('access', 0);
-                    } else {
-                        Cookies.set('access', 1);
-                    }
-                    this.$router.push({
-                        name: 'home_index'
-                    });
+                  console.log("fdfdfdf");
+                  this.$ajax.post('/user/save', {
+                      userName: this.form.userName,
+                      password: this.form.password
+                  })
+                  // successful
+                  .then(function (response) {
+                      console.log(response);
+                      // get data from response
+
+                      Cookies.set('user', this.form.userName);
+                      Cookies.set('password', this.form.password);
+                      this.$store.commit('setAvator', 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3448484253,3685836170&fm=27&gp=0.jpg');
+                      if (this.form.userName === 'iview_admin') {
+                          Cookies.set('access', 0);
+                      } else {
+                          Cookies.set('access', 1);
+                      }
+                      this.$router.push({
+                          name: 'home_index'
+                      });
+                  })
+                  // some error happened. the status code is not 200
+                  .catch(function (response) {
+                      console.log(response);
+                  });
                 }
             });
         }

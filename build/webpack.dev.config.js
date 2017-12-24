@@ -46,5 +46,11 @@ module.exports = merge(webpackBaseConfig, {
                 'text-editor.vue'
             ]
         })
-    ]
+    ],
+    devServer: {
+        port:8083,
+        historyApiFallback: true,//不跳转
+        inline: true//实时刷新
+  }
+      
 });
